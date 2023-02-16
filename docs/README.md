@@ -10,6 +10,8 @@ footer: 'ECL 2.0 Licensed | Copyright © [YYYY] [Your Name]'
 
 _студент 2-го курсу, групи ІО-11_<span padding-right:5em></span> **Бондаренко Владислав bondarenko.vlad@lll.kpi.ua, https://t.me/BONDVados**
 
+_студент 2-го курсу, групи ІО-11_<span padding-right:5em></span> **Удовиченко Роман udovichenko.roman@lll.kpi.ua, https://t.me/Viserctul**
+
 **Керівник**
 
 *доцент кафедри ОТ ФІОТ, к.т.н., доцент*<span padding-right:5em></span> **Андрій БОЛДАК** 
