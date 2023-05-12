@@ -1,8 +1,6 @@
 # Реалізація інформаційного та програмного забезпечення
 
 В рамках проекту розробляється: 
-- SQL-скрипт для створення та початкового наповнення бази даних
-- RESTfull сервіс для управління даними
 
 ## SQL-скрипт для створення та початкового наповнення бази даних
 
@@ -263,6 +261,87 @@ INSERT INTO `mydb`.`Access` (`User_id`, `Role_id`) VALUES (6, 4);
 INSERT INTO `mydb`.`Access` (`User_id`, `Role_id`) VALUES (7, 4);
 
 COMMIT;
+
+```
+
+## RESTfull сервіс для управління даними
+
+```python
+import fastapi
+from fastapi.responses import JSONResponse
+import pymysql
+
+app = fastapi.FastAPI()
+
+class DB():
+    def __init__(self) -> None:
+        self.connection = pymysql.connect(
+                    host='127.0.0.1',
+                    port=3306,
+                    user='root',
+                    password='',
+                    database='mydb',
+                )
+        self.cursor = self.connection.cursor(pymysql.cursors.DictCursor)
+
+    def execute(self, command):
+        self.cursor.execute(command)
+        result = self.cursor.fetchall()
+        self.connection.commit()
+        return result
+
+
+# Crud - CREATE
+@app.put('/api/User/update/{id}')
+async def update_user(id, request: fastapi.Request):
+    req_dict = await request.json()
+    db = DB()
+    for key in req_dict:
+         if not db.execute(f'SELECT * FROM User WHERE id={id}'):
+            raise fastapi.HTTPException(status_code=404)
+         db.execute(f'UPDATE User SET {key}="{req_dict[key]}" WHERE id={id}')
+    return {"message": f'Updated user with id={id}'}
+
+
+# cRud - READ
+@app.get("/api/User/all")
+def get_users():
+    db = DB()
+    return JSONResponse(db.execute('SELECT * FROM User'))
+
+@app.get('/api/User/{id}')
+def get_user_by_id(id):
+    db = DB()
+    result = db.execute(f'SELECT * FROM User WHERE id={id}')
+    if not result:
+        raise fastapi.HTTPException(status_code=404)
+    return JSONResponse(result)
+
+
+# crUd - UPDATE
+@app.post('/api/User/add', status_code=201)
+async def add_user(request: fastapi.Request):
+    req_dict = await request.json()
+    try:
+        username = req_dict['username']
+        email = req_dict['email']
+        password = req_dict['password']
+        avatar = req_dict['avatar']
+    except:
+        raise fastapi.HTTPException(status_code=400)
+    db = DB()
+    db.execute(f"INSERT INTO `User`(`username`, `email`, `password`, `avatar`) VALUES ('{username}','{email}','{password}',{avatar});")
+    return {'message': f'Added new user: {username}'}
+
+
+# cruD - DELETE
+@app.delete('/api/User/delete/{id}')
+def delete(id):
+    db = DB()
+    if not db.execute(f'SELECT * FROM User WHERE id={id}'):
+        raise fastapi.HTTPException(status_code=404)
+    db.execute(f'DELETE FROM `User` WHERE id={id}')
+    return {'message': f'Deleted user with id={id}'}
 
 ```
 
