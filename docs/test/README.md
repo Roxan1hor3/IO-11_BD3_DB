@@ -14,4 +14,4 @@
 ## Видаляємо юзера.
 ![screenshot7](./images/delete_user.png)
 ## Перевіряємо видаленого юзера.
-![screenshot7](./images/ckeck_delete_user.png)
+![screenshot8](./images/ckeck_delete_user.png)
